@@ -1,0 +1,237 @@
+grammar sysml.Dml
+hidden(WS, ML_COMMENT, SL_COMMENT)
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate dml "http://www.apache.org/sysml/Dml"
+
+
+
+D: // D = DML Program
+	(f+=F|s+=S)*
+;
+
+F:	// F = Functional Statement
+	  name=ID AS 'function'         '(' i=PL ')' ('return' '(' r=PL ')')? '{' (s+=S)* '}'
+	| name=ID AS 'externalfunction' '(' i=PL ')' ('return' '(' r=PL ')')? 'implemented' 'in' '('(spkv+=SPKV (',' spkv+=SPKV)* )? ')'
+;
+
+S: // S = Statement
+	  'source' '(' src=STRING ')' 'as' srcid=ID ES
+	| 'setcwd' '(' cwd=STRING ')' ES
+
+	| 'if'     '(' ife= E 					')' is=BS (=>'else' es=BS)?
+	| 'for'    '(' fp=  FP p=PARFORPARAMS   ')' s =BS
+	| 'parfor' '(' pf=  FP p=PARFORPARAMS	')' s =BS
+	| 'while'  '(' we=  E  					')' s =BS
+
+	| '[' di+= DI (',' di+=DI)* ']' AS                                    fc=FC ES
+	|  lhsdi = DI                   AS ('ifdef' '(' di+=DI ',' e+=E ')' | e+=E) ES
+	| fc = FC ES
+;
+
+FC: // FC = FunctionCall
+	  (bif=BIF|id=ID) '('(pe+=PE(',' pe+=PE)*)? ')'
+;
+
+BS:	// BS = Block of Statements
+	singleS=S | '{' (s+=S)* '}'
+;
+
+FP: // FP = For Predicate
+	id=ID 'in' is=IS
+;
+
+PARFORPARAMS:
+	(',' params+=PARAMS)*
+;
+
+
+PARAMS:
+	  ('check' '=' INT)
+	| ('par' '=' INT)
+	| ('mode' '=' ('LOCAL'|'REMOTE_MR'))
+	| ('taskpartitioner' '=' ('FIXED'|'NAIVE'|'STATIC'|'FACTORING'|'FACTORING_CMIN'|'FACTORING_CMAX'))
+	| ('tasksize' '=' INT)
+	| ('datapartitioner' '=' ('NONE'|'LOCAL'|'REMOTE_MR'))
+	| ('resultmerge' '=' ('LOCAL_MEM'|'LOCAL_FILE'|'LOCAL_AUTOMATIC'|'REMOTE_MR'))
+	| ('opt' '=' ('NONE'|'RULEBASED'|'HEURISTIC'|'GREEDY'|'FULL_DP'))
+;
+
+
+//IP:	// IP = Iterable Predicate
+	// b=E (':' e=E)?
+	//| 'seq' '(' f=E ',' s=E ',' t=E ')'
+	//| func=FC
+//;
+
+DI: // DI = Data Identifier
+	  id   = ID ('['(b=IS)?','(e=IS)?']')?
+	| clid = COMMANDLINE_NAMED_ID
+	| cln  = COMMANDLINE_POSITION_ID
+;
+
+IS:	// IS = ID Selector
+	e1=E (':'e2=E)?
+;
+
+PL:	// PL = Parameter List
+	(t+=TAN (',' t+=TAN)*)
+;
+
+E:	// E = Expression
+	  op=('!'|'+'|'-') t1=E
+	| t1=TE (op=('^'|'%*%'|'%/%'|'%%'|'*'|'/' |'+'|'-'|'>'|'>='|'<'|'<='|'=='|'!='|'&'|'&&'|'|'|'||') t2=E)?
+;
+
+TE:	// TE = Tail Expression
+ 	'(' e=E ')'
+ 	| i	=	INT
+    | d	=	DOUBLE
+    | s	=	STRING
+	| b	=	'TRUE'
+	| b	=	'FALSE'
+	| f	=	FC
+    | di=	DI
+;
+
+SPKV:	// Strict Parameterized Key Value String
+	k=ID '=' v=STRING
+;
+
+PE: 	// Parameterized Expression
+	(id=ID '=')? e=E
+;
+
+TAN:	// Typed Argument No Assign
+	t=MT name=ID
+;
+
+terminal INT returns ecore::EInt :
+    DIGITS('L'|'l')?
+;
+
+terminal DOUBLE returns ecore::EDouble:
+	  DIGIT+'.'DIGIT*EXP?
+	| DIGIT+EXP?
+	|        '.'DIGIT+EXP?
+;
+
+AS: ('<-' | '=');			// Assign
+
+BIF:	// BIF = Built in Functions
+	  'as.scalar'
+	| 'as.matrix'
+	| 'as.double'
+	| 'as.integer'
+	| 'as.logical'
+	| 'append'
+	| 'cbind'
+	| 'matrix'
+	| 'min'
+	| 'max'
+	| 'nrow'
+	| 'ncol'
+	| 'length'
+	| 'prod'
+	| 'rand'
+	| 'rbind'
+	| 'removeEmpty'
+	| 'replace'
+	| 'seqsum'
+	| 'pmin'
+	| 'pmax'
+	| 'rowIndexMax'
+	| 'rowIndexMin'
+	| 'ppred'
+	| 'mean'
+	| 'avg'
+	| 'moment'
+	| 'colSums'
+	| 'colMeans'
+	| 'colMaxs'
+	| 'colMins'
+	| 'covtable'
+	| 'cdf'
+	| 'pnorm'
+	| 'pexp'
+	| 'pchisq'
+	| 'pf'
+	| 'pt'
+	| 'icdf'
+	| 'qnorm'
+	| 'qexp'
+	| 'qchisq'
+	| 'qf'
+	| 'qt'
+	| 'aggregate'
+	| 'interQuartileMean'
+	| 'quantile'
+	| 'median'
+	| 'rowSums'
+	| 'rowMeans'
+	| 'rowMaxs'
+	| 'rowMins'
+	| 'cumsum'
+	| 'cumprod'
+	| 'cummin'
+	| 'cummax'
+	| 'sample'
+	| 'outer'
+	| 'print' | 'stop' | 'order'
+	| 'string'
+	| 'seq'
+
+;
+
+terminal MT :	// ml_type
+	VT | DT'['VT']'
+;
+terminal VT: 	// ValueType
+	  'int'		| 'integer'
+	| 'string'	| 'String'
+	| 'boolean'	| 'Boolean'
+	| 'double'	| 'Double'
+    | 'Int'		| 'Integer'
+;
+
+
+terminal SINGLEID:
+	ALPHA(ALPHA|DIGIT|'_')*
+;
+
+
+terminal DT: // DataType (frame, matrix, scalar, object)
+		  (('f'|'F') ('r'|'R') ('a'|'A') ('m'|'M') ('e'|'E'))
+		| (('m'|'M') ('a'|'A') ('t'|'T') ('r'|'R') ('i'|'I') ('x'|'X'))
+		| (('s'|'S') ('c'|'C') ('a'|'A') ('l'|'L') ('a'|'A') ('r'|'R'))
+		| (('o'|'O') ('b'|'B') ('j'|'J') ('e'|'E') ('c'|'C' ('t'|'T')))
+		//'frame' | 'matrix' | 'scalar' | 'object'
+;
+
+terminal fragment EXP : ('E' | 'e') ('+' | '-')? DIGITS ;
+terminal fragment ALPHA :'a'..'z'|'A'..'Z';
+terminal fragment DIGIT: '0'..'9';
+terminal fragment DIGITS: DIGIT+;
+
+terminal COMMANDLINE_NAMED_ID: 		'$' (ALPHA (ALPHA|DIGIT|'_')*);
+terminal COMMANDLINE_POSITION_ID: 	'$' DIGIT+;
+
+// supports single and double quoted string with escape characters
+terminal STRING:
+	'"' ( '\\'('a'|'b'|'t'|'n'|'f'|'r'|'v'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |
+	"'" ( '\\'('a'|'b'|'t'|'n'|'f'|'r'|'v'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
+;
+
+terminal ES: ';';			// End Statement
+
+ID:
+	  name='index.return'
+	| name='lower.tail'
+	| name = SINGLEID('::'SINGLEID)*
+;
+
+// Comments, whitespaces and new line
+terminal SL_COMMENT : '#' !('\n'|'\r')* ('\r'? '\n')?;
+terminal ML_COMMENT :'/*' -> '*/';
+terminal WS :(' '|'\t'|'\n'|'\r')+;

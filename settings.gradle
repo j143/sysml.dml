@@ -1,0 +1,3 @@
+include 'sysml.dml'
+include 'sysml.dml.ide'
+include 'sysml.dml.idea'
