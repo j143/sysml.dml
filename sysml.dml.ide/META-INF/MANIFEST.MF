@@ -9,3 +9,6 @@ Require-Bundle: sysml.dml,
  org.eclipse.xtext.ide,
  org.eclipse.xtext.xbase.ide
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: sysml.ide.contentassist.antlr.internal,
+ sysml.ide.contentassist.antlr
+

@@ -13,7 +13,7 @@ D: // D = DML Program
 
 F:	// F = Functional Statement
 	  name=ID AS 'function'         '(' i=PL ')' ('return' '(' r=PL ')')? '{' (s+=S)* '}'
-	| name=ID AS 'externalfunction' '(' i=PL ')' ('return' '(' r=PL ')')? 'implemented' 'in' '('(spkv+=SPKV (',' spkv+=SPKV)* )? ')'
+	| name=ID AS 'externalFunction' '(' i=PL ')' ('return' '(' r=PL ')')? 'implemented' 'in' '('(spkv+=SPKV (',' spkv+=SPKV)* )? ')'
 ;
 
 S: // S = Statement
@@ -184,10 +184,10 @@ BIF:	// BIF = Built in Functions
 
 ;
 
-terminal MT :	// ml_type
-	VT | DT'['VT']'
+MT :	// ml_type
+	(DT'['VT']') | (VT) 
 ;
-terminal VT: 	// ValueType
+VT: 	// ValueType
 	  'int'		| 'integer'
 	| 'string'	| 'String'
 	| 'boolean'	| 'Boolean'
@@ -201,12 +201,13 @@ terminal SINGLEID:
 ;
 
 
-terminal DT: // DataType (frame, matrix, scalar, object)
-		  (('f'|'F') ('r'|'R') ('a'|'A') ('m'|'M') ('e'|'E'))
-		| (('m'|'M') ('a'|'A') ('t'|'T') ('r'|'R') ('i'|'I') ('x'|'X'))
-		| (('s'|'S') ('c'|'C') ('a'|'A') ('l'|'L') ('a'|'A') ('r'|'R'))
-		| (('o'|'O') ('b'|'B') ('j'|'J') ('e'|'E') ('c'|'C' ('t'|'T')))
-		//'frame' | 'matrix' | 'scalar' | 'object'
+DT: // DataType (frame, matrix, scalar, object)
+		//  (('f'|'F') ('r'|'R') ('a'|'A') ('m'|'M') ('e'|'E'))
+		//| (('m'|'M') ('a'|'A') ('t'|'T') ('r'|'R') ('i'|'I') ('x'|'X'))
+		//| (('s'|'S') ('c'|'C') ('a'|'A') ('l'|'L') ('a'|'A') ('r'|'R'))
+		//| (('o'|'O') ('b'|'B') ('j'|'J') ('e'|'E') ('c'|'C' ('t'|'T')))
+		  'frame' | 'matrix' | 'scalar' | 'object'
+		| 'Frame' | 'Matrix' | 'Scalar' | 'Object'
 ;
 
 terminal fragment EXP : ('E' | 'e') ('+' | '-')? DIGITS ;
