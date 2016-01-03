@@ -1,0 +1,93 @@
+<idea-plugin version="2">
+	<extensions defaultExtensionNs="org.eclipse.xtext.idea">
+		<package
+			uri="http://www.apache.org/sysml/Dml"
+			class="sysml.dml.DmlPackage"
+		/>
+		<resourceFactory 
+			type="dml"
+			class="org.eclipse.xtext.resource.IResourceFactory"
+			factoryClass="sysml.idea.DmlExtensionFactory"
+		/>
+		<resourceServiceProvider
+			uriExtension="dml"
+			class="org.eclipse.xtext.idea.resource.IResourceIdeaServiceProvider"
+			factoryClass="sysml.idea.DmlExtensionFactory"
+		/>
+
+		<lang.setup
+			language="sysml.Dml"
+			implementationClass="sysml.idea.DmlIdeaSetup"
+		/>
+	</extensions>
+
+	<extensions defaultExtensionNs="com.intellij">
+		<psi.treeChangePreprocessor implementation="sysml.idea.lang.psi.DmlCodeBlockModificationListener"/>
+
+		<fileTypeFactory implementation="sysml.idea.lang.DmlFileTypeFactory"/>
+		<stubElementTypeHolder class="sysml.idea.lang.DmlElementTypeProvider"/>
+		<lang.ast.factory 
+			language="sysml.Dml"
+			factoryClass="sysml.idea.DmlExtensionFactory"
+			implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"
+		/>
+		<lang.parserDefinition 
+			language="sysml.Dml"
+			factoryClass="sysml.idea.DmlExtensionFactory"
+			implementationClass="sysml.idea.lang.parser.DmlParserDefinition"
+		/>
+		<lang.findUsagesProvider 
+			language="sysml.Dml"
+			factoryClass="sysml.idea.DmlExtensionFactory"
+			implementationClass="org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider"
+		/>
+		<lang.refactoringSupport 
+			language="sysml.Dml"
+			factoryClass="sysml.idea.DmlExtensionFactory"
+			implementationClass="org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider"
+		/>
+		<lang.namesValidator 
+			language="sysml.Dml"
+			factoryClass="sysml.idea.DmlExtensionFactory"
+			implementationClass="com.intellij.lang.refactoring.NamesValidator"
+		/>
+		<lang.syntaxHighlighterFactory key="sysml.Dml" implementationClass="sysml.idea.highlighting.DmlSyntaxHighlighterFactory" />
+		<lang.braceMatcher 
+			language="sysml.Dml"
+			factoryClass="sysml.idea.DmlExtensionFactory"
+			implementationClass="com.intellij.lang.PairedBraceMatcher"
+		/>
+		<annotator 
+			language="sysml.Dml"
+			factoryClass="sysml.idea.DmlExtensionFactory"
+			implementationClass="org.eclipse.xtext.idea.annotation.IssueAnnotator"
+		/>
+		<completion.contributor language="sysml.Dml" implementationClass="sysml.idea.completion.DmlCompletionContributor"/>
+		<pom.declarationSearcher implementation="sysml.idea.lang.pom.DmlPomDeclarationSearcher"/>
+
+		<lang.psiStructureViewFactory 
+			language="sysml.Dml"
+			factoryClass="sysml.idea.DmlExtensionFactory"
+			implementationClass="com.intellij.lang.PsiStructureViewFactory"
+		/>
+		<facetType implementation="sysml.idea.facet.DmlFacetType"/>
+      	<lang.documentationProvider 
+      		language="sysml.Dml"
+      		factoryClass="sysml.idea.DmlExtensionFactory"
+      		implementationClass="org.eclipse.xtext.idea.documentation.IdeaDocumentationProvider"
+      	/>
+		<colorSettingsPage implementation="sysml.idea.highlighting.DmlColorSettingsPage"/>
+		<highlightVisitor implementation="sysml.idea.highlighting.DmlSemanticHighlightVisitor"/>
+
+		<lang.formatter 
+			language="sysml.Dml"
+			factoryClass="sysml.idea.DmlExtensionFactory"
+			implementationClass="com.intellij.formatting.FormattingModelBuilder"
+		/>
+		<lang.commenter 
+			language="sysml.Dml"
+			factoryClass="sysml.idea.DmlExtensionFactory"
+			implementationClass="com.intellij.lang.CodeDocumentationAwareCommenter"
+		/>
+	</extensions>
+</idea-plugin>
